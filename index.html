@@ -4,20 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>أسعار الذهب والعملات اليوم في مصر | Chronos FX</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
-    <meta name="description" content="تحديث لحظي لأسعار الذهب (عيار 21، 18، 24) وأسعار العملات مقابل الجنيه المصري. استخدم حاسبة المصنعية الدقيقة الآن.">
+    <title>عُملة | أسعار الذهب والعملات اليوم في مصر</title>
+    <meta name="description" content="منصة عُملة لمتابعة أسعار الذهب والدولار لحظة بلحظة في مصر مع حاسبة المصنعية.">
     
-    <meta name="keywords" content="سعر الذهب اليوم، سعر الدولار، أسعار العملات، حاسبة الذهب، مصنعية الذهب">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* اترك الـ CSS كما هو */
         body { font-family: 'Readex Pro', sans-serif; background: #020617; color: #f8fafc; overflow-x: hidden; }
-        /* ... باقي التنسيقات ... */
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
+        .tab-btn.active { background: #ca8a04; color: #000; font-weight: bold; box-shadow: 0 4px 20px rgba(202, 138, 4, 0.4); }
+        .gold-grad { background: linear-gradient(to right, #fde68a, #b45309); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hidden-section { display: none; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .spinning { animation: spin 1s ease-in-out; }
+        .status-pulse { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -34,7 +39,6 @@
                     <span class="text-[9px] text-gray-500 font-bold tracking-[0.3em] uppercase ml-1">OMLA Platform</span>
                 </div>
             </div>
-            
             <div class="flex items-center gap-2 bg-gray-900/80 px-3 py-1.5 rounded-full border border-gray-800 ml-2">
                 <div class="status-pulse"></div>
                 <span class="text-[10px] font-bold text-green-500 uppercase tracking-widest" data-ar="مباشر" data-en="Live">مباشر</span>
@@ -45,16 +49,13 @@
             <button onclick="switchTab('currency')" id="btn-currency" class="tab-btn active px-8 py-2.5 rounded-xl transition-all duration-300 text-sm" data-ar="العملات" data-en="Currencies">العملات</button>
             <button onclick="switchTab('gold')" id="btn-gold" class="tab-btn px-8 py-2.5 rounded-xl transition-all duration-300 text-sm" data-ar="الذهب" data-en="Gold">الذهب</button>
         </div>
-    
+
         <div class="flex items-center gap-3">
-            <button onclick="refreshWithAnim()" class="flex items-center gap-2 bg-blue-600/5 hover:bg-blue-600 text-blue-500 hover:text-white px-5 py-2.5 rounded-xl border border-blue-600/20 transition-all group overflow-hidden relative">
-                <span id="refresh-icon" class="relative z-10">🔄</span>
-                <span class="text-xs font-bold relative z-10" data-ar="تحديث" data-en="Update">تحديث</span>
+            <button onclick="refreshManual()" class="flex items-center gap-2 bg-blue-600/5 hover:bg-blue-600 text-blue-500 hover:text-white px-5 py-2.5 rounded-xl border border-blue-600/20 transition-all group relative">
+                <span id="refresh-icon">🔄</span>
+                <span class="text-xs font-bold" data-ar="تحديث" data-en="Update">تحديث</span>
             </button>
-            
-            <button onclick="toggleLang()" class="bg-gray-800/80 hover:bg-gray-700 px-5 py-2.5 rounded-xl border border-gray-700 text-[10px] font-black transition-all hover:border-gray-500" id="lang-toggle-btn">
-                ENGLISH
-            </button>
+            <button onclick="toggleLang()" class="bg-gray-800/80 hover:bg-gray-700 px-5 py-2.5 rounded-xl border border-gray-700 text-[10px] font-black transition-all" id="lang-toggle-btn">ENGLISH</button>
         </div>
     </header>
 
@@ -65,30 +66,23 @@
                     <div class="glass p-6 rounded-[2rem] shadow-2xl">
                         <h3 class="font-bold mb-6 text-sm text-gray-500 flex justify-between" data-ar="أسعار الصرف اللحظية" data-en="Exchange Rates">
                             <span>أسعار الصرف اللحظية</span>
-                            <span class="text-blue-500 italic">EGP ~</span>
+                            <span class="text-blue-500 italic text-[10px]">EGP ~</span>
                         </h3>
                         <div id="currency-list" class="space-y-3"></div>
                     </div>
-                    
                     <div class="glass p-6 rounded-[2rem] border-t-4 border-blue-500/50">
-                        <h4 class="text-xs font-bold text-blue-400 mb-6 uppercase tracking-wider" data-ar="🧮 محول العملات" data-en="🧮 FX Converter">🧮 محول العملات</h4>
+                        <h4 class="text-xs font-bold text-blue-400 mb-6 uppercase tracking-wider text-center" data-ar="🧮 محول العملات" data-en="🧮 FX Converter">🧮 محول العملات</h4>
                         <div class="space-y-4">
-                            <input type="number" id="c-input" value="1" class="w-full bg-black/40 p-4 rounded-2xl outline-none border border-gray-800 focus:border-blue-500 text-xl font-bold transition-all">
-                            <select id="c-select" class="w-full bg-gray-800 p-4 rounded-2xl outline-none border border-gray-700 text-sm font-semibold cursor-pointer hover:bg-gray-700 transition-colors"></select>
-                            <div class="p-6 bg-blue-600/5 rounded-2xl border border-blue-600/10 text-center mt-4">
+                            <input type="number" id="c-input" value="1" class="w-full bg-black/40 p-4 rounded-2xl outline-none border border-gray-800 focus:border-blue-500 text-xl font-bold text-center">
+                            <select id="c-select" class="w-full bg-gray-800 p-4 rounded-2xl outline-none border border-gray-700 text-sm font-semibold"></select>
+                            <div class="p-6 bg-blue-600/5 rounded-2xl border border-blue-600/10 text-center">
                                 <div id="c-output" class="text-3xl font-black text-blue-500">0.00</div>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="lg:col-span-8 glass rounded-[2rem] p-8">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-sm font-bold text-gray-400" data-ar="مخطط أداء الدولار" data-en="USD Performance Chart">مخطط أداء الدولار</h3>
-                        <div class="flex gap-2 text-[10px] font-bold">
-                            <span class="text-green-500 bg-green-500/10 px-2 py-1 rounded">+0.4%</span>
-                        </div>
-                    </div>
+                    <h3 class="text-sm font-bold text-gray-400 mb-6" data-ar="مخطط أداء الدولار" data-en="USD Performance Chart">مخطط أداء الدولار</h3>
                     <div id="currencyChart"></div>
                 </div>
             </div>
@@ -96,50 +90,37 @@
 
         <div id="section-gold" class="hidden-section space-y-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glass p-8 rounded-[2rem] border-r-4 border-yellow-600 hover:translate-y-[-5px] transition-transform">
+                <div class="glass p-8 rounded-[2rem] border-r-4 border-yellow-600">
                     <p class="text-gray-500 text-xs font-bold mb-2 uppercase" data-ar="ذهب عيار 24" data-en="24K Gold">ذهب عيار 24</p>
                     <h2 class="text-3xl font-black gold-grad" id="val-g24">--</h2>
                 </div>
-                <div class="glass p-8 rounded-[2rem] border-r-4 border-gray-400 hover:translate-y-[-5px] transition-transform">
+                <div class="glass p-8 rounded-[2rem] border-r-4 border-gray-400">
                     <p class="text-gray-500 text-xs font-bold mb-2 uppercase" data-ar="ذهب عيار 21" data-en="21K Gold">ذهب عيار 21</p>
                     <h2 class="text-3xl font-black text-gray-100" id="val-g21">--</h2>
                 </div>
-                <div class="glass p-8 rounded-[2rem] border-r-4 border-gray-600 hover:translate-y-[-5px] transition-transform">
+                <div class="glass p-8 rounded-[2rem] border-r-4 border-gray-600">
                     <p class="text-gray-500 text-xs font-bold mb-2 uppercase" data-ar="ذهب عيار 18" data-en="18K Gold">ذهب عيار 18</p>
                     <h2 class="text-3xl font-black text-gray-400" id="val-g18">--</h2>
                 </div>
             </div>
-
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <div class="lg:col-span-8 glass rounded-[2rem] p-8">
                     <h3 class="text-sm font-bold mb-6 text-gray-400" data-ar="تحليل السوق العالمي للذهب" data-en="Global Gold Market Analysis">تحليل السوق العالمي للذهب</h3>
                     <div id="goldMultiChart"></div>
                 </div>
-                
                 <div class="lg:col-span-4 glass p-8 rounded-[2rem] border-t-4 border-yellow-600/50">
-                    <h3 class="font-bold mb-8 text-yellow-500 flex items-center gap-2" data-ar="⚖️ حاسبة الصاغة" data-en="⚖️ Gold Calculator">⚖️ حاسبة الصاغة</h3>
+                    <h3 class="font-bold mb-8 text-yellow-500 text-center" data-ar="⚖️ حاسبة الصاغة" data-en="⚖️ Gold Calculator">⚖️ حاسبة الصاغة</h3>
                     <div class="space-y-6">
-                        <div>
-                            <label class="text-[10px] text-gray-500 font-bold mb-2 block uppercase" data-ar="الوزن بالجرام" data-en="Weight (g)">الوزن بالجرام</label>
-                            <input type="number" id="g-w" placeholder="0.00" class="w-full bg-black/40 p-4 rounded-xl outline-none border border-gray-800 focus:border-yellow-600 text-xl font-bold transition-all">
-                        </div>
+                        <input type="number" id="g-w" placeholder="الوزن بالجرام" class="w-full bg-black/40 p-4 rounded-xl outline-none border border-gray-800 focus:border-yellow-600 text-xl font-bold text-center">
                         <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-[10px] text-gray-500 font-bold mb-2 block uppercase" data-ar="العيار" data-en="Karat">العيار</label>
-                                <select id="g-k" class="w-full bg-gray-800 p-4 rounded-xl outline-none border border-gray-700 text-sm">
-                                    <option value="21">21K</option><option value="18">18K</option><option value="24">24K</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="text-[10px] text-yellow-600 font-bold mb-2 block uppercase" data-ar="المصنعية/جرام" data-en="Work/g">المصنعية/جرام</label>
-                                <input type="number" id="g-m" value="150" class="w-full bg-gray-800 p-4 rounded-xl outline-none border border-gray-700 text-yellow-500 font-bold text-center">
-                            </div>
+                            <select id="g-k" class="w-full bg-gray-800 p-4 rounded-xl border border-gray-700 text-sm">
+                                <option value="21">21K</option><option value="18">18K</option><option value="24">24K</option>
+                            </select>
+                            <input type="number" id="g-m" value="150" class="w-full bg-gray-800 p-4 rounded-xl border border-gray-700 text-yellow-500 font-bold text-center">
                         </div>
-                        <div class="pt-8 mt-4 border-t border-gray-800">
-                            <div class="bg-yellow-600/10 p-6 rounded-3xl text-center border border-yellow-600/20 shadow-lg">
-                                <p class="text-[10px] text-gray-400 mb-2 uppercase tracking-widest" data-ar="إجمالي السعر النهائي" data-en="Total Final Price">إجمالي السعر النهائي</p>
-                                <h2 class="text-4xl font-black gold-grad" id="g-res">0.00</h2>
-                            </div>
+                        <div class="bg-yellow-600/10 p-6 rounded-3xl text-center border border-yellow-600/20 shadow-lg">
+                            <p class="text-[10px] text-gray-400 mb-2 uppercase tracking-widest" data-ar="إجمالي السعر النهائي" data-en="Total Final Price">إجمالي السعر النهائي</p>
+                            <h2 class="text-4xl font-black gold-grad" id="g-res">0.00</h2>
                         </div>
                     </div>
                 </div>
@@ -149,37 +130,19 @@
 
     <footer class="max-w-7xl mx-auto w-full px-4 py-10 mt-10 border-t border-gray-900 text-center">
         <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-gray-500 text-[10px] font-bold uppercase tracking-widest">
-            <p>© 2026 CHRONOS FX TRADING TERMINAL</p>
-            <p data-ar="جميع الأسعار استرشادية وتخضع لتغيرات السوق" data-en="All prices are indicative and subject to market changes">جميع الأسعار استرشادية وتخضع لتغيرات السوق</p>
-            <div class="flex gap-4">
-                <span class="hover:text-yellow-600 cursor-pointer">Twitter</span>
-                <span class="hover:text-yellow-600 cursor-pointer">Telegram</span>
-            </div>
+            <p>© 2026 OMLA PLATFORM</p>
+            <p data-ar="الأسعار استرشادية وتخضع لتغيرات السوق" data-en="Prices are indicative">الأسعار استرشادية وتخضع لتغيرات السوق</p>
         </div>
     </footer>
 
     <script>
-        const API_KEY = '52db0772c5888ee47fb601e12cd58e16';
+        const API_KEY = 'cbc92210ee198f35c4f01e12cd58e16';
         let state = { rates: {}, egp: 0, g24: 0, lang: 'ar' };
         let goldChart, currChart;
 
         const currencyData = {
-            ar: { 
-                'USD': { name: 'دولار أمريكي', flag: '🇺🇸' }, 
-                'EUR': { name: 'يورو أوروبي', flag: '🇪🇺' }, 
-                'GBP': { name: 'جنيه إسترليني', flag: '🇬🇧' }, 
-                'SAR': { name: 'ريال سعودي', flag: '🇸🇦' }, 
-                'AED': { name: 'درهم إماراتي', flag: '🇦🇪' }, 
-                'KWD': { name: 'دينار كويتي', flag: '🇰🇼' } 
-            },
-            en: { 
-                'USD': { name: 'US Dollar', flag: '🇺🇸' }, 
-                'EUR': { name: 'Euro', flag: '🇪🇺' }, 
-                'GBP': { name: 'British Pound', flag: '🇬🇧' }, 
-                'SAR': { name: 'Saudi Riyal', flag: '🇸🇦' }, 
-                'AED': { name: 'UAE Dirham', flag: '🇦🇪' }, 
-                'KWD': { name: 'Kuwaiti Dinar', flag: '🇰🇼' } 
-            }
+            ar: { 'USD': { name: 'دولار أمريكي', flag: '🇺🇸' }, 'EUR': { name: 'يورو أوروبي', flag: '🇪🇺' }, 'GBP': { name: 'جنيه إسترليني', flag: '🇬🇧' }, 'SAR': { name: 'ريال سعودي', flag: '🇸🇦' }, 'AED': { name: 'درهم إماراتي', flag: '🇦🇪' }, 'KWD': { name: 'دينار كويتي', flag: '🇰🇼' } },
+            en: { 'USD': { name: 'US Dollar', flag: '🇺🇸' }, 'EUR': { name: 'Euro', flag: '🇪🇺' }, 'GBP': { name: 'British Pound', flag: '🇬🇧' }, 'SAR': { name: 'Saudi Riyal', flag: '🇸🇦' }, 'AED': { name: 'UAE Dirham', flag: '🇦🇪' }, 'KWD': { name: 'Kuwaiti Dinar', flag: '🇰🇼' } }
         };
 
         function getDays() {
@@ -193,33 +156,50 @@
             return res;
         }
 
-        async function init() {
+        async function init(force = false) {
+            const cachedData = localStorage.getItem('omla_data');
+            const cachedTime = localStorage.getItem('omla_time');
+            const oneHour = 60 * 60 * 1000;
+
+            if (!force && cachedData && cachedTime && (Date.now() - cachedTime < oneHour)) {
+                processData(JSON.parse(cachedData));
+                return;
+            }
+
             try {
                 const res = await fetch(`https://api.metalpriceapi.com/v1/latest?api_key=${API_KEY}`);
                 const data = await res.json();
                 if (data?.success) {
-                    state.rates = data.rates;
-                    state.egp = data.rates.EGP;
-                    state.g24 = ( (1 / data.rates.XAU) / 31.1035 ) * state.egp;
-                    render();
-                    if(goldChart) { goldChart.destroy(); currChart.destroy(); }
-                    renderCharts();
+                    localStorage.setItem('omla_data', JSON.stringify(data));
+                    localStorage.setItem('omla_time', Date.now().toString());
+                    processData(data);
                 }
-            } catch (e) { console.error("API Error"); }
+            } catch (e) {
+                if(cachedData) processData(JSON.parse(cachedData));
+            }
         }
 
-        function refreshWithAnim() {
-            const icon = document.getElementById('refresh-icon');
-            icon.classList.add('spinning');
-            init().then(() => setTimeout(() => icon.classList.remove('spinning'), 1000));
+        function processData(data) {
+            state.rates = data.rates;
+            state.egp = data.rates.EGP;
+            state.g24 = ( (1 / data.rates.XAU) / 31.1035 ) * state.egp;
+            render();
+            if(goldChart) { goldChart.destroy(); currChart.destroy(); }
+            renderCharts();
+        }
+
+        function refreshManual() {
+            document.getElementById('refresh-icon').classList.add('spinning');
+            init(true).then(() => {
+                setTimeout(() => document.getElementById('refresh-icon').classList.remove('spinning'), 1000);
+            });
         }
 
         function toggleLang() {
             state.lang = state.lang === 'ar' ? 'en' : 'ar';
-            const isAr = state.lang === 'ar';
-            document.getElementById('app-html').dir = isAr ? 'rtl' : 'ltr';
-            document.getElementById('lang-toggle-btn').innerText = isAr ? 'English' : 'العربية';
-            document.querySelectorAll('[data-ar]').forEach(el => el.innerText = isAr ? el.getAttribute('data-ar') : el.getAttribute('data-en'));
+            document.getElementById('app-html').dir = state.lang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('lang-toggle-btn').innerText = state.lang === 'ar' ? 'English' : 'العربية';
+            document.querySelectorAll('[data-ar]').forEach(el => el.innerText = state.lang === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en'));
             render();
             if(goldChart) { goldChart.destroy(); currChart.destroy(); }
             renderCharts();
@@ -242,14 +222,7 @@
             Object.keys(currencyData[state.lang]).forEach(c => {
                 const val = c === 'USD' ? state.egp : (state.egp / state.rates[c]);
                 const meta = currencyData[state.lang][c];
-                list.innerHTML += `
-                    <div class="flex justify-between items-center p-4 bg-gray-800/20 rounded-2xl border border-gray-800/40 hover:border-blue-500/30 transition-all">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xl">${meta.flag}</span>
-                            <span class="text-xs font-bold text-gray-300">${meta.name}</span>
-                        </div>
-                        <span class="font-mono font-bold text-blue-400">${val.toFixed(2)}</span>
-                    </div>`;
+                list.innerHTML += `<div class="flex justify-between items-center p-4 bg-gray-800/20 rounded-2xl border border-gray-800/40"><div class="flex items-center gap-3"><span class="text-xl">${meta.flag}</span><span class="text-xs font-bold text-gray-300">${meta.name}</span></div><span class="font-mono font-bold text-blue-400">${val.toFixed(2)}</span></div>`;
                 sel.innerHTML += `<option value="${c}">${meta.flag} ${meta.name}</option>`;
             });
 
@@ -268,7 +241,7 @@
                 const m = parseFloat(document.getElementById('g-m').value) || 0;
                 const k = document.getElementById('g-k').value;
                 let p = state.g24; if(k=="21") p*=0.875; if(k=="18") p*=0.75;
-                document.getElementById('g-res').innerText = ((p + m) * w).toLocaleString(undefined, {maximumFractionDigits:0}) + (isAr ? ' ج.م' : ' EGP');
+                document.getElementById('g-res').innerText = Math.round((p + m) * w).toLocaleString() + (isAr ? ' ج.م' : ' EGP');
             };
             document.getElementById('g-w').oninput = updateG; document.getElementById('g-k').onchange = updateG; document.getElementById('g-m').oninput = updateG;
         }
@@ -276,36 +249,27 @@
         function renderCharts() {
             const days = getDays();
             currChart = new ApexCharts(document.querySelector("#currencyChart"), {
-                chart: { type: 'area', height: 350, toolbar: {show:false}, background: 'transparent', animations: {enabled: true} },
-                series: [{ name: 'EGP', data: [47.8, 48.2, 48.1, 48.6, state.egp] }],
-                colors: ['#3b82f6'], fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0 } },
+                chart: { type: 'area', height: 350, toolbar: {show:false}, background: 'transparent' },
+                series: [{ name: 'EGP', data: [state.egp-0.5, state.egp-0.2, state.egp-0.3, state.egp+0.1, state.egp] }],
+                colors: ['#3b82f6'], stroke: { curve: 'smooth', width: 2 },
                 xaxis: { categories: days, labels: {style: {colors: '#64748b', fontSize: '10px'}} },
                 yaxis: { labels: { style: {colors: '#64748b'}, formatter: (v) => v.toFixed(2) } },
                 grid: { borderColor: '#1e293b', strokeDashArray: 4 }, theme: { mode: 'dark' }
             });
             currChart.render();
 
-            const g21 = state.g24 * 0.875; const g18 = state.g24 * 0.75;
+            const g21 = state.g24 * 0.875;
             goldChart = new ApexCharts(document.querySelector("#goldMultiChart"), {
                 chart: { type: 'line', height: 350, toolbar: {show:false} },
-                series: [
-                    { name: state.lang === 'ar' ? 'عيار 21' : '21K', data: [g21-12, g21-3, g21-8, g21+4, g21] },
-                    { name: state.lang === 'ar' ? 'عيار 18' : '18K', data: [g18-10, g18-2, g18-5, g18+1, g18] }
-                ],
-                colors: ['#ca8a04', '#64748b'], stroke: { width: 3, curve: 'smooth' },
+                series: [{ name: '21K', data: [g21-40, g21-10, g21-25, g21+15, g21] }],
+                colors: ['#ca8a04'], stroke: { width: 4, curve: 'smooth' },
                 xaxis: { categories: days, labels: {style: {colors: '#64748b', fontSize: '10px'}} },
-                yaxis: { labels: { style: {colors: '#64748b'}, formatter: (v) => v.toFixed(0) } },
+                yaxis: { labels: { style: {colors: '#64748b'}, formatter: (v) => Math.round(v).toLocaleString() } },
                 grid: { borderColor: '#1e293b' }, theme: { mode: 'dark' }
             });
             goldChart.render();
         }
-
-        setInterval(init, 300000); // تحديث تلقائي كل 5 دقائق
         init();
     </script>
 </body>
-
 </html>
-
-
-
