@@ -22,28 +22,41 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <header class="max-w-7xl mx-auto w-full px-4 py-6 flex flex-col md:flex-row justify-between items-center gap-6">
-        <div class="flex items-center gap-4">
-            <div class="text-3xl font-black tracking-tighter italic">CHRONOS<span class="gold-grad">FX</span></div>
-            <div class="flex items-center gap-2 bg-gray-900/50 px-3 py-1 rounded-full border border-gray-800">
-                <div class="status-pulse"></div>
-                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest" data-ar="سوق مباشر" data-en="Live Market">سوق مباشر</span>
+<header class="max-w-7xl mx-auto w-full px-4 py-6 flex flex-col md:flex-row justify-between items-center gap-6">
+    <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
+            <div class="relative w-12 h-12 flex items-center justify-center bg-gradient-to-br from-yellow-400 via-yellow-600 to-yellow-800 rounded-2xl shadow-lg shadow-yellow-900/30 transform -rotate-3">
+                <span class="text-black text-2xl font-black transform rotate-3">ع</span>
+                <div class="absolute -bottom-1 -left-1 w-4 h-4 bg-blue-500 rounded-full border-4 border-slate-950"></div>
+            </div>
+            <div class="flex flex-col">
+                <h1 class="text-3xl font-black leading-none tracking-tighter">عُملة</h1>
+                <span class="text-[9px] text-gray-500 font-bold tracking-[0.3em] uppercase ml-1">OMLA Platform</span>
             </div>
         </div>
         
-        <div class="flex bg-gray-900 p-1 rounded-2xl border border-gray-800 shadow-inner">
-            <button onclick="switchTab('currency')" id="btn-currency" class="tab-btn active px-8 py-2 rounded-xl transition-all duration-300" data-ar="العملات" data-en="Currencies">العملات</button>
-            <button onclick="switchTab('gold')" id="btn-gold" class="tab-btn px-8 py-2 rounded-xl transition-all duration-300" data-ar="الذهب" data-en="Gold">الذهب</button>
+        <div class="flex items-center gap-2 bg-gray-900/80 px-3 py-1.5 rounded-full border border-gray-800 ml-2">
+            <div class="status-pulse"></div>
+            <span class="text-[10px] font-bold text-green-500 uppercase tracking-widest" data-ar="مباشر" data-en="Live">مباشر</span>
         </div>
+    </div>
+    
+    <div class="flex bg-gray-900/50 p-1.5 rounded-2xl border border-gray-800 shadow-inner backdrop-blur-sm">
+        <button onclick="switchTab('currency')" id="btn-currency" class="tab-btn active px-8 py-2.5 rounded-xl transition-all duration-300 text-sm" data-ar="العملات" data-en="Currencies">العملات</button>
+        <button onclick="switchTab('gold')" id="btn-gold" class="tab-btn px-8 py-2.5 rounded-xl transition-all duration-300 text-sm" data-ar="الذهب" data-en="Gold">الذهب</button>
+    </div>
 
-        <div class="flex items-center gap-3">
-            <button onclick="refreshWithAnim()" class="flex items-center gap-2 bg-blue-600/10 hover:bg-blue-600 text-blue-500 hover:text-white px-4 py-2 rounded-xl border border-blue-600/20 transition-all group">
-                <span id="refresh-icon">🔄</span>
-                <span class="text-xs font-bold" data-ar="تحديث الأسعار" data-en="Refresh">تحديث الأسعار</span>
-            </button>
-            <button onclick="toggleLang()" class="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-xl border border-gray-700 text-xs font-bold transition-all" id="lang-toggle-btn">English</button>
-        </div>
-    </header>
+    <div class="flex items-center gap-3">
+        <button onclick="refreshWithAnim()" class="flex items-center gap-2 bg-blue-600/5 hover:bg-blue-600 text-blue-500 hover:text-white px-5 py-2.5 rounded-xl border border-blue-600/20 transition-all group overflow-hidden relative">
+            <span id="refresh-icon" class="relative z-10">🔄</span>
+            <span class="text-xs font-bold relative z-10" data-ar="تحديث" data-en="Update">تحديث</span>
+        </button>
+        
+        <button onclick="toggleLang()" class="bg-gray-800/80 hover:bg-gray-700 px-5 py-2.5 rounded-xl border border-gray-700 text-[10px] font-black transition-all hover:border-gray-500" id="lang-toggle-btn">
+            ENGLISH
+        </button>
+    </div>
+</header>
 
     <main class="max-w-7xl mx-auto w-full px-4 flex-grow">
         <div id="section-currency" class="space-y-6">
@@ -293,4 +306,5 @@
 </body>
 
 </html>
+
 
