@@ -246,30 +246,40 @@
             document.getElementById('g-w').oninput = updateG; document.getElementById('g-k').onchange = updateG; document.getElementById('g-m').oninput = updateG;
         }
 
-        function renderCharts() {
-            const days = getDays();
-            currChart = new ApexCharts(document.querySelector("#currencyChart"), {
-                chart: { type: 'area', height: 350, toolbar: {show:false}, background: 'transparent' },
-                series: [{ name: 'EGP', data: [state.egp-0.5, state.egp-0.2, state.egp-0.3, state.egp+0.1, state.egp] }],
-                colors: ['#3b82f6'], stroke: { curve: 'smooth', width: 2 },
-                xaxis: { categories: days, labels: {style: {colors: '#64748b', fontSize: '10px'}} },
-                yaxis: { labels: { style: {colors: '#64748b'}, formatter: (v) => v.toFixed(2) } },
-                grid: { borderColor: '#1e293b', strokeDashArray: 4 }, theme: { mode: 'dark' }
-            });
-            currChart.render();
-
-            const g21 = state.g24 * 0.875;
-            goldChart = new ApexCharts(document.querySelector("#goldMultiChart"), {
-                chart: { type: 'line', height: 350, toolbar: {show:false} },
-                series: [{ name: '21K', data: [g21-40, g21-10, g21-25, g21+15, g21] }],
-                colors: ['#ca8a04'], stroke: { width: 4, curve: 'smooth' },
-                xaxis: { categories: days, labels: {style: {colors: '#64748b', fontSize: '10px'}} },
-                yaxis: { labels: { style: {colors: '#64748b'}, formatter: (v) => Math.round(v).toLocaleString() } },
-                grid: { borderColor: '#1e293b' }, theme: { mode: 'dark' }
-            });
-            goldChart.render();
-        }
+            function renderCharts() {
+                const days = getDays();
+                
+                // إعدادات لمنع المكتبة من الوصول للتخزين المحجوب
+                const chartOptions = {
+                    chart: {
+                        animations: { enabled: false }, // قفل الانيميشن بيقلل استهلاك التخزين
+                        toolbar: { show: false }
+                    }
+                };
+            
+                currChart = new ApexCharts(document.querySelector("#currencyChart"), {
+                    ...chartOptions,
+                    chart: { ...chartOptions.chart, type: 'area', height: 350 },
+                    series: [{ name: 'EGP', data: [47.8, 48.2, 48.1, 48.6, state.egp] }],
+                    colors: ['#3b82f6'],
+                    xaxis: { categories: days },
+                    theme: { mode: 'dark' }
+                });
+                currChart.render();
+            
+                const g21 = state.g24 * 0.875;
+                goldChart = new ApexCharts(document.querySelector("#goldMultiChart"), {
+                    ...chartOptions,
+                    chart: { ...chartOptions.chart, type: 'line', height: 350 },
+                    series: [{ name: '21K', data: [g21-12, g21-3, g21-8, g21+4, g21] }],
+                    colors: ['#ca8a04'],
+                    xaxis: { categories: days },
+                    theme: { mode: 'dark' }
+                });
+                goldChart.render();
+            }
         init();
     </script>
 </body>
 </html>
+
